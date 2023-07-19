@@ -1,24 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import {
+  Route,
+  Link,
+  Routes,
+  Outlet
+} from "react-router-dom";
 import './App.css';
+import MusicPage from './music/musicPage'
 
+function Dashboard() {
+  return (
+    <div className="Dashboard">
+      <Outlet />
+    </div>
+  );
+}
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <Link to="/music">音乐播放器</Link>
+      <Routes>
+        <Route path="/" element={<Dashboard />}>
+          <Route
+            path="music"
+            element={<MusicPage />}
+          />
+        </Route>
+      </Routes> */}
+
+      <Routes>
+        <Route path="/" element={<MusicPage />}></Route>
+      </Routes>
+
+
     </div>
   );
 }
