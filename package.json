@@ -2,6 +2,7 @@
   "name": "musictsreact",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://mediaapp-1-w5571626.deta.app/",
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -14,7 +15,6 @@
     "@types/node": "^16.18.38",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "http-proxy-middleware": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.1",

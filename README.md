@@ -6,7 +6,6 @@ npm install @mui/icons-material
 
 
 npx create-react-app my-app --template typescript
-npm install http-proxy-middleware
 npm i react-router-dom
 
 - 纯用Link报错后because the react-router-dom Link implementation is calling useContext and the context it is looking for is provided by BrowserRouter，\
