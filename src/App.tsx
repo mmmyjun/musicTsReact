@@ -6,7 +6,8 @@ import {
   Outlet
 } from "react-router-dom";
 import './App.css';
-import MusicPage from './music/musicPage'
+import MusicPage from './compoents/music/MusicPage';
+import TvPage from './compoents/tv/TvPage';
 
 function Dashboard() {
   return (
@@ -29,7 +30,8 @@ function App() {
       </Routes> */}
 
       <Routes>
-        <Route path="/" element={<MusicPage />}></Route>
+        <Route path="/" element={<TvPage />}></Route>
+        <Route path="/music" element={<MusicPage />}></Route>
       </Routes>
 
 
