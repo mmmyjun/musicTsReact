@@ -8,6 +8,7 @@ import {
 import './App.css';
 import MusicPage from './compoents/music/MusicPage';
 import TvPage from './compoents/tv/TvPage';
+import TvDetail from './compoents/tv/TvDetail';
 
 function Dashboard() {
   return (
@@ -31,6 +32,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<TvPage />}></Route>
+        <Route path="/tvDetail/:id"
+          element={<TvDetail />}></Route>
         <Route path="/music" element={<MusicPage />}></Route>
       </Routes>
 

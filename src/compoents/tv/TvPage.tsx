@@ -1496,8 +1496,7 @@ function TvPage() {
     return (
         <Box className="tv-page-container">
             <Box className="tv-page-inner">
-                searchValue: {searchValue}
-                <Box className="search-container">
+                <Box className="search-container" textAlign="center" padding={1}>
                     <form onSubmit={searchIt}>
                         <TextField
                             value={searchValue}
