@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
@@ -38,9 +38,9 @@ export default function TvList({ lists }) {
                             <Box sx={
                                 {
                                     color: tilteColor,
-                                    fontSize: 24,
+                                    fontSize: 18,
                                     fontWeight: 'bold',
-                                    padding: '10px 0',
+                                    padding: 1,
                                     '&:hover': {
                                         color: 'red'
                                     }
@@ -51,7 +51,7 @@ export default function TvList({ lists }) {
                                 {
                                     item.data.map((im, ix) => {
                                         return (
-                                            <Grid sx={{ p: 1 }} xs={12} sm={6} md={4}>
+                                            <Grid key={'inner' + ix} sx={{ p: 1 }} xs={12} sm={6} md={3}>
                                                 <Link href={"/tvDetail/" + getBotaUrl(btoa(item.key + '|' + im.id))} underline="none" target="_blank">
                                                     <Stack sx={{
                                                         cursor: 'pointer',

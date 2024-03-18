@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 
@@ -1473,6 +1473,8 @@ var obj  ={
 };
 const { code, msg, data } = obj;
 
+
+
 function TvPage() {
     const [searchValue, setSearchValue] = useState('');
     const [tvLists, setTvLists] = useState(data); // [{}]
@@ -1481,8 +1483,10 @@ function TvPage() {
     const searchIt = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         console.log('searchValue:', searchValue);
+    }
 
-        // getTvList(searchValue).then((res) => {
+    useEffect(() => {
+       // getTvList(searchValue).then((res) => {
         //     console.log('res:', res);
         //     const { code, msg, data } = res;
         //     if (code === 0) {
@@ -1491,7 +1495,7 @@ function TvPage() {
         //         console.log('msg:', msg);
         //     }
         // });
-    }
+    }, []);
 
     return (
         <Box className="tv-page-container">
