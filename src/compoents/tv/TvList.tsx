@@ -62,6 +62,7 @@ export default function TvList({ lists }) {
                                                                 component="img"
                                                                 image={getPosterUrl(btoa(item.key + '|' + im.id))}
                                                                 alt={im.name}
+                                                                onError={(e) => e.target.src = 'https://media-online.netlify.app/api/video/5f9e3e3e3e3e3e3e3e3e3e3e?type=poster'}
                                                             />
                                                         </Stack>
                                                         <Stack paddingLeft={1}>

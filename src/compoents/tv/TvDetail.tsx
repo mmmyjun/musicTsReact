@@ -6,6 +6,8 @@ import Stack from '@mui/material/Stack';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import CardMedia from '@mui/material/CardMedia';
+import Grid from '@mui/material/Unstable_Grid2';
+import Button from '@mui/material/Button';
 
 import { getVideoInfoById } from '../../request/api.js';
 
@@ -37,10 +39,19 @@ function TvDetail() {
     const { id } = params;
 
     const [tvDetail, setTvDetail] = useState({}); // [{}]
-    const [currentEpisodes, setCurrentEpisodes] = useState<number>();
+    const [currentEpisodes, setCurrentEpisodes] = useState<number>(0);
     const [tvInfo, setTvInfo] = useState<TvDetailProps>(); // ''
 
     const [tabValue, setTabValue] = useState(0);
+    const changeTab = (event: React.SyntheticEvent, newValue: number) => {
+        setTabValue(newValue);
+    };
+
+    const [currentUrl, setCurrentUrl] = useState('');
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [volume, setVolume] = useState(1);
+    const [isPlaying, setIsPlaying] = useState(false);
     useEffect(() => {
         getVideoInfoById(id).then((res) => {
             console.log('res:', res);
@@ -240,34 +251,44 @@ function TvDetail() {
                 const { pic, name, note: totalNumberOfEpisodes, subname, type, year, area, director, actor, des: briefIntroduction, dataList } = obj;
                 setTvInfo({ pic, name, totalNumberOfEpisodes, subname, type, year, area, director, actor, briefIntroduction, dataList });
                 setCurrentEpisodes(0);
+                setCurrentUrl(dataList[0].urls[0].url);
             } else {
                 console.log('msg:', msg);
             }
         });
     }, []);
-    const changeTab = (event: React.SyntheticEvent, newValue: number) => {
-        setTabValue(newValue);
-    };
-    return (
-        <Stack className="tv-detail-container">
-            <VideoComp />
-            <Stack className='tv-except-video-container'>
-                <Box>
-                    <h1> {tvInfo?.name} - {currentEpisodes || ''} </h1>
 
-                    <Tabs value={tabValue} onChange={changeTab}>
+
+    return (
+        <Stack className="tv-detail-container" sx={{
+            padding: "0px 40px",
+        }}>
+            <VideoComp currentUrl={currentUrl} currentTime={currentTime} duration={duration} volume={volume} isPlaying={isPlaying} />
+
+            <Stack className='tv-except-video-container' sx={{
+                    backgroundColor: 'aliceblue',
+                }}>
+                <Box>
+                    <Box sx={{
+                        textAlign: 'center',
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        p: 2,
+                    }}> {tvInfo?.name} - {tvInfo?.dataList[0].urls[currentEpisodes].label || ''} </Box>
+
+                    <Tabs value={tabValue} onChange={changeTab} centered>
                         <Tab label="简介" />
-                        <Tab label="集数" />
+                        <Tab label="选集" />
                     </Tabs>
 
                     <Stack>
                         {
                             tabValue === 0 && <Stack direction="row">
                                 <CardMedia
-                                    sx={{ width: 120, aspectRatio: 2 / 3 }}
+                                    sx={{ width: 120, height: 180, p: 1 }}
                                     component="img"
                                     image={tvInfo?.pic}
-                                    alt={tvInfo.name}
+                                    alt={tvInfo?.name}
                                 />
                                 <Stack sx={{
                                         p: 1,
@@ -290,19 +311,24 @@ function TvDetail() {
                                 {
                                     tvInfo?.dataList.map((item, index) => {
                                         return (
-                                            <Box key={index}>
-                                                <h3>{item.name}</h3>
-                                                <Stack>
+                                            <Box>
+                                                {/* <h3>{item.name}</h3> */}
+                                                <Grid container className="tv-list-item-inner">
                                                     {
                                                         item.urls.map((im, ix) => {
                                                             return (
-                                                                <Box key={ix} onClick={() => setCurrentEpisodes(ix)}>
-                                                                    {im.label}
-                                                                </Box>
+                                                                <Grid textAlign="center" key={'episodes' + ix} sx={{ p: 1 }} xs={3} sm={2} md={1}>
+                                                                    <Button key={'btn' + ix} variant={ix == currentEpisodes ? 'contained': 'outlined'} onClick={() => {
+                                                                        setCurrentEpisodes(ix);
+                                                                        setCurrentUrl(im.url);
+                                                                    }}>
+                                                                        {im.label}
+                                                                    </Button>
+                                                                </Grid>
                                                             );
                                                         })
                                                     }
-                                                </Stack>
+                                                </Grid>
                                             </Box>
                                         );
                                     })

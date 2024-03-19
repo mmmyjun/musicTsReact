@@ -19,3 +19,6 @@ render(
   document.getElementById('root')
 )
 because the react-router-dom Link implementation is calling useContext and the context it is looking for is provided by BrowserRouter
+
+
+npm install --save hls.js
