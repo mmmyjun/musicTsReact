@@ -1,10 +1,16 @@
 import Stack from '@mui/material/Stack';
 import { useState, useRef, useEffect } from 'react';
 import Hls from 'hls.js';
+import { styled } from '@mui/material/styles';
 
-
+const StyledVideo = styled('video')({
+    width: '100%',
+    height: '100%',
+    display: 'block',
+});
 function VideoComp({ currentUrl, currentTime, duration, volume, isPlaying }) {
     const [isFullScreen, setIsFullScreen] = useState(false);
+
     const videoRef = useRef(null);
     const hlsRef = useRef(null);
     useEffect(() => {
@@ -45,21 +51,18 @@ function VideoComp({ currentUrl, currentTime, duration, volume, isPlaying }) {
         console.log('pausePlay', e);
     }
 
+
     return (
         <Stack className="video-comp" sx={{
             width: '100%',
             height: 'calc(100vh - 60px)',
+            backgroundColor: 'black',
         }}>
-            <video ref={videoRef} controls src={currentUrl} style={{
-                width: '100%',
-                height: '100%',            
-            }}
+            <StyledVideo ref={videoRef} controls src={currentUrl}
                 onProgress={propgressEvent} onLoadedMetadata={loadedmetadata} onDurationChange={durationchange}
                 preload="auto" onTimeUpdate={timeUpdate} onError={errorPlay} onPlay={startPlay} onEnded={endPlay}
                 onPause={pausePlay} >
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
+            </StyledVideo>
         </Stack>
     );
 }

@@ -7,6 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Link from '@mui/material/Link';
+import Chip from '@mui/material/Chip';
 
 
 function getBotaUrl(btoaUrl: string) {
@@ -65,11 +66,14 @@ export default function TvList({ lists }) {
                                                                 onError={(e) => e.target.src = 'https://media-online.netlify.app/api/video/5f9e3e3e3e3e3e3e3e3e3e3e?type=poster'}
                                                             />
                                                         </Stack>
-                                                        <Stack paddingLeft={1}>
-                                                            <Box color="mediumpurple" fontSize={22} className="tv-list-item-inner-item-title">{im.name}</Box>
+                                                        <Stack paddingLeft={1} position="relative" minWidth="200px" width="100%" >
+                                                            <Box color="mediumpurple" fontSize={20} p={1} className="tv-list-item-inner-item-title">{im.name}</Box>
                                                             <Stack direction="row" spacing={2} >
-                                                                <Box className="tv-list-item-inner-item-type">{im.type}</Box>
-                                                                <Box className="tv-list-item-inner-item-note">{im.note}</Box>
+                                                                <Stack className="tv-list-item-inner-item-type" flexDirection="row" alignItems="center">
+                                                                    <Chip size='small' label={im.type} color="primary" />
+                                                                    <Box className="tv-list-item-inner-item-note" marginLeft={1}>{im.note}</Box>
+                                                                </Stack>
+                                                               
                                                             </Stack>
                                                             <Box sx={{
                                                                 position: 'absolute',
