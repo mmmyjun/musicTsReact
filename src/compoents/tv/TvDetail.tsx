@@ -57,7 +57,6 @@ function TvDetail() {
     useEffect(() => {
         setIsLoading(true);
         getVideoInfoById(id).then((res) => {
-            setIsLoading(false);
             console.log('res:', res);
             const { code, msg, data } = res;
             if (code === 0) {
@@ -71,6 +70,7 @@ function TvDetail() {
             } else {
                 console.log('msg:', msg);
             }
+            setIsLoading(false);
         });
     }, []);
 
@@ -85,7 +85,7 @@ function TvDetail() {
 
                 {
                     isLoading ? (
-                        <Stack sx={{ justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+                        <Stack sx={{ justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <CircularProgress />
                         </Stack>
                     ) :
@@ -98,7 +98,7 @@ function TvDetail() {
                                     fontSize: '24px',
                                     fontWeight: 'bold',
                                     p: 2,
-                                }}> {tvInfo.name} - {tvInfo.dataList[0].urls[currentEpisodes].label || ''} </Box>
+                                }}> {tvInfo?.name} - {tvInfo?.dataList[0].urls[currentEpisodes].label || ''} </Box>
 
                                 <Tabs value={tabValue} onChange={changeTab} centered>
                                     <Tab label="简介" />
@@ -111,29 +111,33 @@ function TvDetail() {
                                             <CardMedia
                                                 sx={{ width: 120, height: 180, p: 1 }}
                                                 component="img"
-                                                image={tvInfo.pic}
-                                                alt={tvInfo.name}
+                                                image={tvInfo?.pic}
+                                                alt={tvInfo?.name}
                                             />
                                             <Stack sx={{
                                                 p: 1,
                                             }}>
-                                                <Box>{tvInfo.name}</Box>
-                                                <Box>{tvInfo.totalNumberOfEpisodes}</Box>
+                                                <Box sx={{
+                                                    fontSize: 20,
+                                                    fontWeight: 'bold',
+                                                    color: 'mediumpurple',
+                                                }}>{tvInfo?.name}</Box>
+                                                <Box>{tvInfo?.totalNumberOfEpisodes}</Box>
 
-                                                <Box>又名: {tvInfo.subname}</Box>
-                                                <Box>类别: {tvInfo.type}</Box>
-                                                <Box>年份: {tvInfo.year}</Box>
-                                                <Box>地区: {tvInfo.area}</Box>
-                                                <Box>导演: {tvInfo.director}</Box>
-                                                <Box>演员: {tvInfo.actor}</Box>
-                                                <Box>简介: {tvInfo.briefIntroduction}</Box>
+                                                <Box>又名: {tvInfo?.subname}</Box>
+                                                <Box>类别: {tvInfo?.type}</Box>
+                                                <Box>年份: {tvInfo?.year}</Box>
+                                                <Box>地区: {tvInfo?.area}</Box>
+                                                <Box>导演: {tvInfo?.director}</Box>
+                                                <Box>演员: {tvInfo?.actor}</Box>
+                                                <Box>简介: {tvInfo?.briefIntroduction.trim()}</Box>
                                             </Stack>
                                         </Stack>
                                     }
                                     {
                                         tabValue === 1 && <Box>
                                             {
-                                                tvInfo.dataList.map((item, index) => {
+                                                tvInfo?.dataList.map((item, index) => {
                                                     return (
                                                         <Box>
                                                             <Grid container className="tv-list-item-inner">

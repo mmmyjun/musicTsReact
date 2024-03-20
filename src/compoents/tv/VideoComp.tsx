@@ -15,14 +15,18 @@ function VideoComp({ currentUrl, currentTime, duration, volume, isPlaying }) {
     const hlsRef = useRef(null);
     useEffect(() => {
         hlsRef.current = new Hls();
-        hlsRef.current.attachMedia(videoRef.current);
     }, []);
     useEffect(() => {
         if (Hls.isSupported()) {
-            hlsRef.current.loadSource(currentUrl);
+            if (currentUrl) {
+                hlsRef.current.loadSource(currentUrl);
+                hlsRef.current.attachMedia(videoRef.current);
+            }
         }
         else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-            videoRef.current.src = currentUrl;
+            if (currentUrl) {
+                videoRef.current.src = currentUrl;
+            }
         }
     }, [currentUrl]);
 

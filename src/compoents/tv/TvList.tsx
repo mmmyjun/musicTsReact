@@ -67,7 +67,7 @@ export default function TvList({ lists }) {
                                                             />
                                                         </Stack>
                                                         <Stack paddingLeft={1} position="relative" minWidth="200px" width="100%" >
-                                                            <Box color="mediumpurple" fontSize={20} p={1} className="tv-list-item-inner-item-title">{im.name}</Box>
+                                                            <Box color="mediumpurple" fontSize={20} sx={{ padding: '8px 0'}} className="tv-list-item-inner-item-title">{im.name}</Box>
                                                             <Stack direction="row" spacing={2} >
                                                                 <Stack className="tv-list-item-inner-item-type" flexDirection="row" alignItems="center">
                                                                     <Chip size='small' label={im.type} color="primary" />
