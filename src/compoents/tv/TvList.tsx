@@ -24,7 +24,7 @@ function getBotaUrl(btoaUrl: string) {
 }
 function getPosterUrl(btoaUrl: string) {
     let tempBUrl = getBotaUrl(btoaUrl);
-    return `https://media-online.netlify.app/api/video/${tempBUrl}?type=poster`
+    return `/api/video/${tempBUrl}?type=poster`
 }
 
 
@@ -66,7 +66,7 @@ export default function TvList({ lists }) {
                                                                 onError={(e) => e.target.src = 'https://media-online.netlify.app/api/video/5f9e3e3e3e3e3e3e3e3e3e3e?type=poster'}
                                                             />
                                                         </Stack>
-                                                        <Stack paddingLeft={1} position="relative" minWidth="200px" width="100%" >
+                                                        <Stack paddingLeft={1} position="relative" minWidth="100px" width="100%" >
                                                             <Box color="mediumpurple" fontSize={20} sx={{ padding: '8px 0'}} className="tv-list-item-inner-item-title">{im.name}</Box>
                                                             <Stack direction="row" spacing={2} >
                                                                 <Stack className="tv-list-item-inner-item-type" flexDirection="row" alignItems="center">
@@ -76,6 +76,7 @@ export default function TvList({ lists }) {
                                                                
                                                             </Stack>
                                                             <Box sx={{
+                                                                textAlign: 'right',
                                                                 position: 'absolute',
                                                                 bottom: 0,
                                                                 right: 0,
