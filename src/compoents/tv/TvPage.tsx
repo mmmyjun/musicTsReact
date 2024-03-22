@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 
 import TvList from './TvList.tsx';
 
-import { getTvList } from '../../request/api.js';
+import { getTvList } from '@/request/api';
 
 function TvPage() {
     const [searchValue, setSearchValue] = useState('');

@@ -10,7 +10,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { getVideoInfoById } from '../../request/api.js';
+import { getVideoInfoById } from '@/request/api';
 
 interface TvUrlProps {
     label: string;
