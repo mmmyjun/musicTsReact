@@ -100,6 +100,16 @@ function VideoComp({ currentUrl }) {
         videoRef.current.currentTime += 10;
     }
 
+    const changeVolume = (e) => {
+        console.log('changeVolume', e);
+    }
+
+    const changeCurrentTime = (e, value) => {
+        console.log('changeCurrentTime', e, value);
+        setCurrentTime(value);
+        videoRef.current.currentTime = value;
+    }
+
     return (
         <>
 
@@ -123,6 +133,9 @@ function VideoComp({ currentUrl }) {
 
                 </Stack>
 
+                <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} changeCurrentTime={changeCurrentTime} />
+
+
                 <Stack className="video-control" direction="row" justifyContent="space-between" alignItems="center" sx={{
                     width: '100%',
                     height: '60px',
@@ -133,7 +146,7 @@ function VideoComp({ currentUrl }) {
            
 
                     <Stack direction="row" alignItems="center">
-                        <IconButton color="inherit">{isPlaying ? <PauseOutlinedIcon onClick={ pausePlay } /> : <PlayArrowOutlinedIcon onClick={ startPlay } />}</IconButton>
+                        <IconButton color="inherit" onClick={ isPlaying ? pausePlay : startPlay}>{isPlaying ? <PauseOutlinedIcon /> : <PlayArrowOutlinedIcon />}</IconButton>
                         <Stack direction="row" alignItems="center">
                             <span>{TotalSToMmss(currentTime)} / {TotalSToMmss(duration)}</span>
                         </Stack>
@@ -141,15 +154,15 @@ function VideoComp({ currentUrl }) {
 
                 
                     {/* <Stack direction="row" alignItems="center">
-                        <IconButton color="inherit">{ volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
+                        <IconButton color="inherit" onClick={ changeVolume }>{ volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
                         <Stack direction="row" alignItems="center">
                             <span>{volume}</span>
                         </Stack>
                     </Stack>
                     <Stack direction="row" alignItems="center">
                         <IconButton color="inherit" onClick={() => setIsFullScreen(!isFullScreen)}>{isFullScreen ? '退出全屏' : '全屏'}</IconButton>
-                    </Stack> */}
-                  
+                    </Stack>
+                   */}
                  
                 </Stack>
             </Stack>
