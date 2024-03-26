@@ -17,27 +17,20 @@ export default function TvProgress({ currentTime, duration, cacheWidth, changeCu
     const popperRef = React.useRef<Instance>(null);
     const areaRef = React.useRef<HTMLDivElement>(null);
 
+    const [tooltipTime, setTooltipTime] = React.useState<number>(0);
+
     const handleMouseMove = (event: React.MouseEvent) => {
         positionRef.current = { x: event.clientX, y: event.clientY };
-        console.log('handleMouseMove', positionRef.current);
+        setTooltipTime(event.nativeEvent.offsetX / event.target.clientWidth * duration);
 
         if (popperRef.current != null) {
             popperRef.current.update();
         }
     };
 
-    const getAriaValueText = (value: number) => {
-        console.log('getAriaValueText', value);
-
-        // return TotalSToMmss(value);
-    }
-
-
-
     return <Stack className="video-progress-container">
         {/* <LinearProgress variant="determinate" value={cacheWidth} /> */}
-        {currentTime}
-        <Tooltip title={TotalSToMmss(currentTime)} placement="top" arrow
+        <Tooltip title={TotalSToMmss(tooltipTime)} placement="top" arrow
             PopperProps={{
                 popperRef,
                 anchorEl: {

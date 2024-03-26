@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.MuiSlider-thumb, .MuiSlider-thumb > *, .MuiSlider-thumb::before, .MuiSlider-thumb::after, .MuiSlider-track {
+  pointer-events: none;
+}
