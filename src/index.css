@@ -38,3 +38,7 @@ code {
 .MuiLinearProgress-bar {
   background-color: yellow !important;
 }
+
+.MuiSlider-track {
+  height: 3px !important;
+}

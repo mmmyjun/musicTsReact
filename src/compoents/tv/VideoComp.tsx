@@ -18,6 +18,9 @@ import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
 import Slider from '@mui/material/Slider';
 
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+
 const StyledVideo = styled('video')({
     width: '100%',
     height: '100%',
@@ -34,7 +37,7 @@ function VideoComp({ currentUrl }) {
     const hlsRef = useRef(null);
 
     const [isFullScreen, setIsFullScreen] = useState(false);
-    const [volume, setVolume] = useState(0.5);
+    const [volume, setVolume] = useState(50);
     useEffect(() => {
         hlsRef.current = new Hls();
     }, []);
@@ -99,9 +102,8 @@ function VideoComp({ currentUrl }) {
     }
 
     const changeVolume = (e: Event, newValue: number | number[]) => {
-        console.log('changeVolume', e, newValue);
         setVolume(newValue as number);
-        videoRef.current.volume = newValue as number;
+        videoRef.current.volume = newValue/100 as number;
     }
 
     const changeCurrentTime = (e, value) => {
@@ -109,10 +111,33 @@ function VideoComp({ currentUrl }) {
         setCurrentTime(value);
         videoRef.current.currentTime = value;
     }
+    const changeVolumeMute = () => {
+        if (volume > 0) {
+            setVolume(0);
+            videoRef.current.volume = 0;
+        } else {
+            setVolume(50);
+            videoRef.current.volume = 0.5;
+        }
+    }
+
+    const changeToggleFullscreen = () => {
+        if (isFullScreen) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            setIsFullScreen(false);
+        } else {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            }
+            setIsFullScreen(true);
+        }
+    }
 
     return (
         <>
-            <Stack className="video-comp-container">
+            <Stack className="video-comp-container" position="relative" >
                 <Stack className="video-comp" direction="row" alignItems="center" position="relative" sx={{
                     width: '100%',
                     height: 'calc(100vh - 60px)',
@@ -129,7 +154,7 @@ function VideoComp({ currentUrl }) {
 
                 </Stack>
 
-                <Stack className="video-control" justifyContent="space-between" alignItems="center" sx={{
+                <Stack className="video-control" position="absolute" bottom={0} justifyContent="space-between" alignItems="center" sx={{
                     width: '100%',
                     height: '70px',
                     backgroundColor: 'black',
@@ -137,28 +162,26 @@ function VideoComp({ currentUrl }) {
                 }}>
                     <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} changeCurrentTime={changeCurrentTime} />
            
-                    <Stack direction="row" alignItems="center">
+                    <Stack direction="row" alignItems="center" className='beblow-video-progress' width={'100%'}>
                         <IconButton color="inherit" onClick={ isPlaying ? pausePlay : startPlay}>{isPlaying ? <PauseOutlinedIcon /> : <PlayArrowOutlinedIcon />}</IconButton>
                         <Stack direction="row" alignItems="center">
                             <span>{TotalSToMmss(currentTime)} / {TotalSToMmss(duration)}</span>
                         </Stack>
 
                         <Stack direction="row" alignItems="center">
-                            <IconButton color="inherit">{ volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
+                            <IconButton color="inherit" onClick={ changeVolumeMute }>{ volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
                             <Slider
                                 sx={{ width: 100 }}
                                 value={typeof volume === 'number' ? volume : 0}
                                 onChange={changeVolume}
                                 valueLabelDisplay="auto"
                                 size="small"
+                                max={100}
                             />
-                            {/* <Stack direction="row" alignItems="center">
-                                <span>{volume}</span>
-                            </Stack> */}
                         </Stack>
-                        {/* <Stack direction="row" alignItems="center">
-                            <IconButton color="inherit" onClick={() => setIsFullScreen(!isFullScreen)}>{isFullScreen ? '退出全屏' : '全屏'}</IconButton>
-                        </Stack> */}
+                        <Stack direction="row" alignItems="center">
+                            <IconButton color="inherit" onClick={ changeToggleFullscreen }>{isFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}</IconButton>
+                        </Stack>
                     </Stack>
                 </Stack>
             </Stack>
