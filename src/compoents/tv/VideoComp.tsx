@@ -16,6 +16,8 @@ import TvProgress from './TvProgress';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
+import Slider from '@mui/material/Slider';
+
 const StyledVideo = styled('video')({
     width: '100%',
     height: '100%',
@@ -51,7 +53,6 @@ function VideoComp({ currentUrl }) {
     }, [currentUrl]);
 
     const propgressEvent = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-        // console.log('propgressEvent', e);
         const buffered = videoRef.current.buffered!;
         let bufferedEnd: number;
         try {
@@ -63,14 +64,11 @@ function VideoComp({ currentUrl }) {
         setCacheWidth((bufferedEnd / duration) * 100);
     }
     const loadedmetadata = (e: any) => {
-        console.log('loadedmetadata', e);
-        setDuration(videoRef.current.duration);
     }
     const durationchange = (e: any) => {
-        console.log('durationchange', e);
+        setDuration(videoRef.current.duration);
     }
     const timeUpdate = (e: any) => {
-        // console.log('timeUpdate', e);
         setCurrentTime(videoRef.current.currentTime);
     }
     const errorPlay = (e: any) => {
@@ -100,8 +98,10 @@ function VideoComp({ currentUrl }) {
         videoRef.current.currentTime += 10;
     }
 
-    const changeVolume = (e) => {
-        console.log('changeVolume', e);
+    const changeVolume = (e: Event, newValue: number | number[]) => {
+        console.log('changeVolume', e, newValue);
+        setVolume(newValue as number);
+        videoRef.current.volume = newValue as number;
     }
 
     const changeCurrentTime = (e, value) => {
@@ -112,10 +112,6 @@ function VideoComp({ currentUrl }) {
 
     return (
         <>
-
-            {/* currentTime啊啊: {currentTime} <br />
-            duration啊啊: {duration} <br />
-            cacheWidth啊啊: {cacheWidth} <br /> */}
             <Stack className="video-comp-container">
                 <Stack className="video-comp" direction="row" alignItems="center" position="relative" sx={{
                     width: '100%',
@@ -133,37 +129,37 @@ function VideoComp({ currentUrl }) {
 
                 </Stack>
 
-                <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} changeCurrentTime={changeCurrentTime} />
-
-
-                <Stack className="video-control" direction="row" justifyContent="space-between" alignItems="center" sx={{
+                <Stack className="video-control" justifyContent="space-between" alignItems="center" sx={{
                     width: '100%',
-                    height: '60px',
+                    height: '70px',
                     backgroundColor: 'black',
                     color: '#fff'
                 }}>
-                    {/* <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} /> */}
+                    <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} changeCurrentTime={changeCurrentTime} />
            
-
                     <Stack direction="row" alignItems="center">
                         <IconButton color="inherit" onClick={ isPlaying ? pausePlay : startPlay}>{isPlaying ? <PauseOutlinedIcon /> : <PlayArrowOutlinedIcon />}</IconButton>
                         <Stack direction="row" alignItems="center">
                             <span>{TotalSToMmss(currentTime)} / {TotalSToMmss(duration)}</span>
                         </Stack>
-                    </Stack>
 
-                
-                    {/* <Stack direction="row" alignItems="center">
-                        <IconButton color="inherit" onClick={ changeVolume }>{ volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
                         <Stack direction="row" alignItems="center">
-                            <span>{volume}</span>
+                            <IconButton color="inherit">{ volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
+                            <Slider
+                                sx={{ width: 100 }}
+                                value={typeof volume === 'number' ? volume : 0}
+                                onChange={changeVolume}
+                                valueLabelDisplay="auto"
+                                size="small"
+                            />
+                            {/* <Stack direction="row" alignItems="center">
+                                <span>{volume}</span>
+                            </Stack> */}
                         </Stack>
+                        {/* <Stack direction="row" alignItems="center">
+                            <IconButton color="inherit" onClick={() => setIsFullScreen(!isFullScreen)}>{isFullScreen ? '退出全屏' : '全屏'}</IconButton>
+                        </Stack> */}
                     </Stack>
-                    <Stack direction="row" alignItems="center">
-                        <IconButton color="inherit" onClick={() => setIsFullScreen(!isFullScreen)}>{isFullScreen ? '退出全屏' : '全屏'}</IconButton>
-                    </Stack>
-                   */}
-                 
                 </Stack>
             </Stack>
         </>

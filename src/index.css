@@ -13,6 +13,28 @@ code {
 }
 
 
-.MuiSlider-thumb, .MuiSlider-thumb > *, .MuiSlider-thumb::before, .MuiSlider-thumb::after, .MuiSlider-track {
+.MuiSlider-thumb,
+.MuiSlider-thumb>*,
+.MuiSlider-thumb::before,
+.MuiSlider-thumb::after,
+.MuiSlider-track {
   pointer-events: none;
+}
+
+.MuiLinearProgress-root {
+  background: red;
+  display: block;
+  position: absolute !important;
+  border-radius: inherit;
+  /* opacity: 0.38; */
+  width: 100%;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.MuiLinearProgress-bar {
+  background-color: yellow !important;
 }

@@ -28,8 +28,11 @@ export default function TvProgress({ currentTime, duration, cacheWidth, changeCu
         }
     };
 
-    return <Stack className="video-progress-container">
-        {/* <LinearProgress variant="determinate" value={cacheWidth} /> */}
+    return <Stack className="video-progress-container" sx={{
+        position: 'relative',
+        width: '100%',
+    }}>
+        <LinearProgress variant="determinate" value={cacheWidth} />
         <Tooltip title={TotalSToMmss(tooltipTime)} placement="top" arrow
             PopperProps={{
                 popperRef,
