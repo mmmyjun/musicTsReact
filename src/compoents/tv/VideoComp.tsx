@@ -26,7 +26,7 @@ const StyledVideo = styled('video')({
     height: '100%',
     display: 'block',
 });
-function VideoComp({ currentUrl }) {
+function VideoComp({ currentUrl, changeToNextUrl }) {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const [currentTime, setCurrentTime] = useState<number>(0);
@@ -85,6 +85,8 @@ function VideoComp({ currentUrl }) {
     }
     const endPlay = (e: any) => {
         console.log('endPlay', e);
+        setIsPlaying(false);
+        changeToNextUrl();
     }
     const pausePlay = (e: any) => {
         console.log('pausePlay', e);

@@ -269,13 +269,19 @@ function TvDetail() {
         </Stack>
     }
 
+    const changeToNextUrl = () => {
+        if (currentEpisodes < tvInfo.dataList[0].urls.length - 1) {
+            setCurrentEpisodes(currentEpisodes + 1);
+            setCurrentUrl(tvInfo.dataList[0].urls[currentEpisodes + 1].url);
+    }
+
     return (
         <Stack className="tv-detail-container" alignItems="center">
             <Stack sx={{
                 width: '88%',
                 maxWidth: '1200px'
             }}>
-                <VideoComp currentUrl={currentUrl} />
+                <VideoComp currentUrl={currentUrl} changeToNextUrl={changeToNextUrl} />
 
                 <Stack className='tv-except-video-container' sx={{
                     backgroundColor: 'aliceblue',
