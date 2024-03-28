@@ -35,7 +35,7 @@ interface TvDetailProps {
 }
 
 
-function TvDetail() {
+export default function TvDetail() {
     const params = useParams();
     const { id } = params;
 
@@ -273,6 +273,7 @@ function TvDetail() {
         if (currentEpisodes < tvInfo.dataList[0].urls.length - 1) {
             setCurrentEpisodes(currentEpisodes + 1);
             setCurrentUrl(tvInfo.dataList[0].urls[currentEpisodes + 1].url);
+        }
     }
 
     return (
@@ -363,6 +364,4 @@ function TvDetail() {
             </Stack>
         </Stack>
     );
-}
-
-export default TvDetail;
+};
