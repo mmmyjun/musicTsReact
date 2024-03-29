@@ -21,6 +21,14 @@ import Slider from '@mui/material/Slider';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import PictureInPictureAltIcon from '@mui/icons-material/PictureInPictureAlt';
+import SettingsIcon from '@mui/icons-material/Settings';
+
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+
 const StyledVideo = styled('video')({
     width: '100%',
     height: '100%',
@@ -38,6 +46,7 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
 
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [volume, setVolume] = useState(50);
+    const [playbackRate, setPlaybackRate] = useState(1);
     useEffect(() => {
         hlsRef.current = new Hls();
     }, []);
@@ -70,6 +79,7 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
     }
     const durationchange = (e: any) => {
         setDuration(videoRef.current.duration);
+        setPlaybackRate(videoRef.current.playbackRate);
     }
     const timeUpdate = (e: any) => {
         setCurrentTime(videoRef.current.currentTime);
@@ -159,7 +169,6 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
                 <Stack className="video-control" position="absolute" bottom={0} justifyContent="space-between" alignItems="center" sx={{
                     width: '100%',
                     height: '70px',
-                    backgroundColor: 'black',
                     color: '#fff'
                 }}>
                     <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} changeCurrentTime={changeCurrentTime} />
