@@ -13,6 +13,8 @@ import { TotalSToMmss } from '@/utils/format-time';
 
 import TvProgress from './TvProgress';
 
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 
@@ -29,12 +31,14 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
+import Fade from '@mui/material/Fade';
+
 const StyledVideo = styled('video')({
     width: '100%',
     height: '100%',
     display: 'block',
 });
-function VideoComp({ currentUrl, changeToNextUrl }) {
+function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeToggleFullscreen }) {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const [currentTime, setCurrentTime] = useState<number>(0);
@@ -44,9 +48,10 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
     const videoRef = useRef(null);
     const hlsRef = useRef(null);
 
-    const [isFullScreen, setIsFullScreen] = useState(false);
     const [volume, setVolume] = useState(50);
     const [playbackRate, setPlaybackRate] = useState(1);
+    const [timer, setTimer] = useState<any>(null);
+    const [showOtherWhenIsPlay, setShowOtherWhenIsPlay] = useState(true);
     useEffect(() => {
         hlsRef.current = new Hls();
     }, []);
@@ -80,6 +85,7 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
     const durationchange = (e: any) => {
         setDuration(videoRef.current.duration);
         setPlaybackRate(videoRef.current.playbackRate);
+        videoRef.current.play();
     }
     const timeUpdate = (e: any) => {
         setCurrentTime(videoRef.current.currentTime);
@@ -92,11 +98,15 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
         console.log('startPlay', e);
         videoRef.current.play();
         setIsPlaying(true);
+
+        setTempHideWhenIsPlaying(false);
+        setTimer(setTimeout(() => {
+          setTempHideWhenIsPlaying(true);
+        }, 5000));
     }
     const endPlay = (e: any) => {
         console.log('endPlay', e);
-        setIsPlaying(false);
-        changeToNextUrl();
+        changeToNextOne();
     }
     const pausePlay = (e: any) => {
         console.log('pausePlay', e);
@@ -113,9 +123,13 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
         videoRef.current.currentTime += 10;
     }
 
+    const skipToNext = () => {
+        changeToNextOne();
+    }
+
     const changeVolume = (e: Event, newValue: number | number[]) => {
         setVolume(newValue as number);
-        videoRef.current.volume = newValue/100 as number;
+        videoRef.current.volume = newValue / 100 as number;
     }
 
     const changeCurrentTime = (e, value) => {
@@ -133,68 +147,92 @@ function VideoComp({ currentUrl, changeToNextUrl }) {
         }
     }
 
-    const changeToggleFullscreen = () => {
-        if (isFullScreen) {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-            setIsFullScreen(false);
+    const togglePictureInPicture = () => {
+        if (document.pictureInPictureElement) {
+            document.exitPictureInPicture();
         } else {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
-            setIsFullScreen(true);
+            videoRef.current.requestPictureInPicture();
+        }
+    }
+
+    const hoverVideo = () => {
+        setShowOtherWhenIsPlay(true);
+        if (isPlaying) {
+            if (timer) clearTimeout(timer);
+            // setTimer(setTimeout(() => {
+            //     setShowOtherWhenIsPlay(false);
+            // }, 8000));
         }
     }
 
     return (
         <>
             <Stack className="video-comp-container" position="relative" >
-                <Stack className="video-comp" direction="row" alignItems="center" position="relative" sx={{
+                <Stack onMouseMove={hoverVideo} onClick={hoverVideo} className="video-comp" direction="row" alignItems="center" position="relative" sx={{
                     width: '100%',
-                    height: 'calc(100vh - 60px)',
+                    height: isFullScreen ? '100vh' : 'calc(100vh - 60px)',
                     backgroundColor: 'black',
                     color: '#fff'
                 }}>
-                    <Stack position="absolute" left={6} zIndex={100}><IconButton color="inherit" onClick={minus10}><Replay10Icon fontSize='large' /></IconButton></Stack>
+                    <Fade in={showOtherWhenIsPlay} timeout={1000}><Stack position="absolute" left={6} zIndex={100}><IconButton color="inherit" onClick={minus10}><Replay10Icon fontSize='large' /></IconButton></Stack></Fade>
                     <StyledVideo ref={videoRef} src={currentUrl}
                         onProgress={propgressEvent} onLoadedMetadata={loadedmetadata} onDurationChange={durationchange}
                         preload="auto" onTimeUpdate={timeUpdate} onError={errorPlay} onPlay={startPlay} onEnded={endPlay}
                         onPause={pausePlay} >
                     </StyledVideo>
-                    <Stack position="absolute" right={6} zIndex={100}>{currentTime < duration - 10 && <IconButton color="inherit" onClick={add10}><Forward10Icon fontSize='large' /></IconButton>}</Stack>
+                    <Fade in={showOtherWhenIsPlay} timeout={1000}><Stack position="absolute" right={6} zIndex={100}>{currentTime < duration - 10 && <IconButton color="inherit" onClick={add10}><Forward10Icon fontSize='large' /></IconButton>}</Stack></Fade>
 
                 </Stack>
 
-                <Stack className="video-control" position="absolute" bottom={0} justifyContent="space-between" alignItems="center" sx={{
-                    width: '100%',
-                    height: '70px',
-                    color: '#fff'
-                }}>
-                    <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} changeCurrentTime={changeCurrentTime} />
-           
-                    <Stack direction="row" alignItems="center" className='beblow-video-progress' width={'100%'}>
-                        <IconButton color="inherit" onClick={ isPlaying ? pausePlay : startPlay}>{isPlaying ? <PauseOutlinedIcon /> : <PlayArrowOutlinedIcon />}</IconButton>
-                        <Stack direction="row" alignItems="center">
-                            <span>{TotalSToMmss(currentTime)} / {TotalSToMmss(duration)}</span>
+                <Fade in={showOtherWhenIsPlay} timeout={1000}>
+                    <Stack className="video-control" position="absolute" bottom={0} alignItems="center" sx={{
+                        width: '100%',
+                        height: '70px',
+                        color: '#fff'
+                    }}>
+                        <Stack direction="row" alignItems="center" width='100%'>
+                            <Stack direction="row" alignItems="center" paddingX={2}><span>{TotalSToMmss(currentTime)}</span></Stack>
+                            <TvProgress currentTime={currentTime} duration={duration} cacheWidth={cacheWidth} changeCurrentTime={changeCurrentTime} />
+                            <Stack direction="row" alignItems="center" paddingX={2}><span>{TotalSToMmss(duration)}</span></Stack>
                         </Stack>
 
-                        <Stack direction="row" alignItems="center">
-                            <IconButton color="inherit" onClick={ changeVolumeMute }>{ volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
-                            <Slider
-                                sx={{ width: 100 }}
-                                value={typeof volume === 'number' ? volume : 0}
-                                onChange={changeVolume}
-                                valueLabelDisplay="auto"
-                                size="small"
-                                max={100}
-                            />
-                        </Stack>
-                        <Stack direction="row" alignItems="center">
-                            <IconButton color="inherit" onClick={ changeToggleFullscreen }>{isFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}</IconButton>
+                        <Stack direction="row" alignItems="center" className='beblow-video-progress' justifyContent="space-between" width='100%'>
+                            <Stack direction="row" alignItems="center">
+                                <IconButton color="inherit" sx={{ marginLeft: '6px' }} onClick={isPlaying ? pausePlay : startPlay}>{isPlaying ? <PauseOutlinedIcon /> : <PlayArrowOutlinedIcon />}</IconButton>
+                                {nextUrl && <Stack direction="row" alignItems="center">
+                                    <IconButton color="inherit" onClick={skipToNext}><SkipNextIcon /></IconButton>
+                                </Stack>
+                                }
+                                <Stack direction="row" alignItems="center">
+                                    <IconButton color="inherit" onClick={changeVolumeMute}>{volume > 0 ? <VolumeUpIcon /> : <VolumeOffIcon />}</IconButton>
+                                    <Slider
+                                        sx={{ width: 100 }}
+                                        value={typeof volume === 'number' ? volume : 0}
+                                        onChange={changeVolume}
+                                        valueLabelDisplay="auto"
+                                        size="small"
+                                        max={100}
+                                    />
+                                </Stack>
+                            </Stack>
+
+                            <Stack direction="row" alignItems="center" mr={1}>
+                                <Stack direction="row" alignItems="center">
+                                    <IconButton color="inherit" onClick={changeToggleFullscreen}>{isFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}</IconButton>
+                                </Stack>
+                                {/* <Stack direction="row" alignItems="center">
+                                    <IconButton color="inherit" ><FileDownloadIcon /></IconButton>
+                                </Stack> */}
+                                <Stack direction="row" alignItems="center">
+                                    <IconButton color="inherit" onClick={togglePictureInPicture}><PictureInPictureAltIcon /></IconButton>
+                                </Stack>
+                                {/* <Stack direction="row" alignItems="center">
+                                    <IconButton color="inherit" ><SettingsIcon /></IconButton>
+                                </Stack> */}
+                            </Stack>
                         </Stack>
                     </Stack>
-                </Stack>
+                </Fade>
             </Stack>
         </>
     );

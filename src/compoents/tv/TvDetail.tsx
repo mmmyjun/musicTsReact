@@ -49,7 +49,16 @@ export default function TvDetail() {
     };
 
     const [currentUrl, setCurrentUrl] = useState('');
+    const [nextUrl, setNextUrl] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [isFullScreen, setIsFullScreen] = useState(false);
+
+    const listenerFullScreenChange = () => {
+        let fullscreenElement = document.fullscreenElement;
+        setIsFullScreen(fullscreenElement!=null);
+        return fullscreenElement!=null;
+    };
+
     useEffect(() => {
         let obj = {
             "last": "2022-07-31 08:03:33",
@@ -242,6 +251,7 @@ export default function TvDetail() {
         setTvInfo({ pic, name, totalNumberOfEpisodes, subname, type, year, area, director, actor, briefIntroduction, dataList });
         setCurrentEpisodes(0);
         setCurrentUrl(dataList[0].urls[0].url);
+        setNextUrl(dataList[0].urls[1]?.url || '');
         setIsLoading(false);
 
         // 图片、名称、集数、又名、类别、年份、地区、导演、演员、简介、播放列表
@@ -256,11 +266,21 @@ export default function TvDetail() {
         //         setTvInfo({ pic, name, totalNumberOfEpisodes, subname, type, year, area, director, actor, briefIntroduction, dataList });
         //         setCurrentEpisodes(0);
         //         setCurrentUrl(dataList[0].urls[0].url);
+        //         setNextUrl(dataList[0].urls[1]?.url || '');
         //         setIsLoading(false);
         //     } else {
         //         console.log('msg:', msg);
         //     }
         // });
+
+        document.addEventListener('fullscreenchange', () => {
+            listenerFullScreenChange();
+        })
+        return () => {
+            document.removeEventListener('fullscreenchange', () => {
+                listenerFullScreenChange();
+            })
+        }
     }, []);
 
     if (isLoading) {
@@ -269,23 +289,40 @@ export default function TvDetail() {
         </Stack>
     }
 
-    const changeToNextUrl = () => {
+    const changeToNextOne = () => {
         if (currentEpisodes < tvInfo.dataList[0].urls.length - 1) {
             setCurrentEpisodes(currentEpisodes + 1);
             setCurrentUrl(tvInfo.dataList[0].urls[currentEpisodes + 1].url);
+            setNextUrl(tvInfo.dataList[0].urls[currentEpisodes + 2]?.url || '');
+        }
+    }
+
+    const changeToggleFullscreen = () => {
+        if (isFullScreen) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            setIsFullScreen(false);
+        } else {
+            if (document.querySelector('.video-comp-container').requestFullscreen) {
+                document.querySelector('.video-comp-container').requestFullscreen();
+            }
+            setIsFullScreen(true);
         }
     }
 
     return (
         <Stack className="tv-detail-container" alignItems="center">
             <Stack sx={{
-                width: '88%',
-                maxWidth: '1200px'
+                width: isFullScreen? '100%' : '88%',
+                maxWidth: isFullScreen ? 'none' : '1200px',
+                overflow: isFullScreen ? 'hidden' : 'auto',
             }}>
-                <VideoComp currentUrl={currentUrl} changeToNextUrl={changeToNextUrl} />
+                <VideoComp currentUrl={currentUrl} changeToNextOne={changeToNextOne} nextUrl={nextUrl} isFullScreen={isFullScreen} changeToggleFullscreen={changeToggleFullscreen} />
 
                 <Stack className='tv-except-video-container' sx={{
                     backgroundColor: 'aliceblue',
+                    display: isFullScreen ? 'none' : 'block',
                 }}>
                     <Box>
                         <Box sx={{
@@ -343,6 +380,7 @@ export default function TvDetail() {
                                                                         <Button key={'btn' + ix} variant={ix == currentEpisodes ? 'contained' : 'outlined'} onClick={() => {
                                                                             setCurrentEpisodes(ix);
                                                                             setCurrentUrl(im.url);
+                                                                            setNextUrl(item.urls[ix + 1]?.url || '');
                                                                         }}>
                                                                             {im.label}
                                                                         </Button>
