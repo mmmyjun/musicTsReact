@@ -98,11 +98,6 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
         console.log('startPlay', e);
         videoRef.current.play();
         setIsPlaying(true);
-
-        setTempHideWhenIsPlaying(false);
-        setTimer(setTimeout(() => {
-          setTempHideWhenIsPlaying(true);
-        }, 5000));
     }
     const endPlay = (e: any) => {
         console.log('endPlay', e);
@@ -159,9 +154,9 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
         setShowOtherWhenIsPlay(true);
         if (isPlaying) {
             if (timer) clearTimeout(timer);
-            // setTimer(setTimeout(() => {
-            //     setShowOtherWhenIsPlay(false);
-            // }, 8000));
+            setTimer(setTimeout(() => {
+                setShowOtherWhenIsPlay(false);
+            }, 8000));
         }
     }
 
