@@ -354,7 +354,7 @@ export default function TvDetail() {
                                             fontWeight: 'bold',
                                             color: 'mediumpurple',
                                         }}>{tvInfo.name}</Box>
-                                        <Box>{tvInfo.totalNumberOfEpisodes}</Box>
+                                        <Box mb={2}>{tvInfo.totalNumberOfEpisodes}</Box>
 
                                         <Box>又名: {tvInfo.subname}</Box>
                                         <Box>类别: {tvInfo.type}</Box>

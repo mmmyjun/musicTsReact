@@ -156,7 +156,7 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
             if (timer) clearTimeout(timer);
             setTimer(setTimeout(() => {
                 setShowOtherWhenIsPlay(false);
-            }, 8000));
+            }, 5000));
         }
     }
 
@@ -170,6 +170,13 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
                     color: '#fff'
                 }}>
                     <Fade in={showOtherWhenIsPlay} timeout={1000}><Stack position="absolute" left={6} zIndex={100}><IconButton color="inherit" onClick={minus10}><Replay10Icon fontSize='large' /></IconButton></Stack></Fade>
+                    <IconButton sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 100,               
+                    }} color="inherit" onClick={isPlaying ? pausePlay : startPlay}>{isPlaying ? <Fade in={showOtherWhenIsPlay} timeout={1000}><PauseOutlinedIcon sx={{width: '66px', height: '66px'}} /></Fade> : <PlayArrowOutlinedIcon sx={{width: '66px', height: '66px'}} />}</IconButton>
                     <StyledVideo ref={videoRef} src={currentUrl}
                         onProgress={propgressEvent} onLoadedMetadata={loadedmetadata} onDurationChange={durationchange}
                         preload="auto" onTimeUpdate={timeUpdate} onError={errorPlay} onPlay={startPlay} onEnded={endPlay}
