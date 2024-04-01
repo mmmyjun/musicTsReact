@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import TvList from './TvList.tsx';
 
@@ -9,8 +10,10 @@ import { getTvList } from '@/request/api';
 function TvPage() {
     const [searchValue, setSearchValue] = useState('');
     const [tvLists, setTvLists] = useState([]); // [{}]
-   
+    const [loadingList, setLoadingList] = useState(false);
+
     const getListData = () => {
+        setLoadingList(true);
         getTvList(searchValue).then((res) => {
             console.log('res:', res);
             const { code, msg, data } = res;
@@ -19,6 +22,8 @@ function TvPage() {
             } else {
                 console.log('msg:', msg);
             }
+        }).finally(() => {
+            setLoadingList(false);
         });
     }
     const searchIt = (e: { preventDefault: () => void; }) => {
@@ -26,7 +31,7 @@ function TvPage() {
         console.log('searchValue:', searchValue);
         getListData();
     }
-    
+
     useEffect(() => {
         if (searchValue) {
             getListData();
@@ -46,8 +51,12 @@ function TvPage() {
                             id="outlined-start-adornment" />
                     </form>
                 </Box>
-                <Box className="tv-list-container">
-                    <TvList lists={ tvLists } />
+                <Box className="tv-list-container" sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    {loadingList ? <CircularProgress /> : <TvList lists={tvLists} />}
                 </Box>
             </Box>
         </Box>

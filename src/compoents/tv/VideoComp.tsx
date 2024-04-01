@@ -54,6 +54,9 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
     const [showOtherWhenIsPlay, setShowOtherWhenIsPlay] = useState(true);
     useEffect(() => {
         hlsRef.current = new Hls();
+        return () => {
+            hlsRef.current.destroy();
+        }
     }, []);
     useEffect(() => {
         if (Hls.isSupported()) {
@@ -85,7 +88,7 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
     const durationchange = (e: any) => {
         setDuration(videoRef.current.duration);
         setPlaybackRate(videoRef.current.playbackRate);
-        videoRef.current.play();
+        startPlay(e);
     }
     const timeUpdate = (e: any) => {
         setCurrentTime(videoRef.current.currentTime);
@@ -94,10 +97,23 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
         console.log('errorPlay', e);
         setIsPlaying(false);
     }
+
+    const [showMute, setShowMute] = useState(false);
     const startPlay = (e: any) => {
         console.log('startPlay', e);
-        videoRef.current.play();
-        setIsPlaying(true);
+        try {
+            videoRef.current.play();
+            setIsPlaying(true);
+            videoRef.current.muted = false;
+        } catch (error) {
+            if (error.name === 'NotAllowedError') {
+                setShowMute(true);
+                videoRef.current.muted = true;
+                console.log('startPlay NotAllowedError:', error);
+                setTimeout(startPlay, 0);
+            }
+        }
+
     }
     const endPlay = (e: any) => {
         console.log('endPlay', e);
@@ -185,6 +201,8 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
                     <Fade in={showOtherWhenIsPlay} timeout={1000}><Stack position="absolute" right={6} zIndex={100}>{currentTime < duration - 10 && <IconButton color="inherit" onClick={add10}><Forward10Icon fontSize='large' /></IconButton>}</Stack></Fade>
 
                 </Stack>
+
+                {/* { showMute && <Stack>取消静音</Stack>} */}
 
                 <Fade in={showOtherWhenIsPlay} timeout={1000}>
                     <Stack className="video-control" position="absolute" bottom={0} alignItems="center" sx={{
