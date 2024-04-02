@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
+import SearchIcon from '@mui/icons-material/Search';
+import IconButton from '@mui/material/IconButton';
 
 import TvList from './TvList.tsx';
 
@@ -44,11 +46,15 @@ function TvPage() {
                 <Box className="search-container" textAlign="center" padding={1}>
                     <form onSubmit={searchIt}>
                         <TextField
+                            size='small'
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             label='搜索影视'
                             variant="filled"
                             id="outlined-start-adornment" />
+                        <IconButton color="inherit" onClick={searchIt} sx={{
+                            mt: 1,
+                        }}><SearchIcon /></IconButton>
                     </form>
                 </Box>
                 <Box className="tv-list-container" sx={{
