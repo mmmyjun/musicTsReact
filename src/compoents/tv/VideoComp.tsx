@@ -52,10 +52,40 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
     const [playbackRate, setPlaybackRate] = useState(1);
     const [timer, setTimer] = useState<any>(null);
     const [showOtherWhenIsPlay, setShowOtherWhenIsPlay] = useState(true);
+    const [hasSetVideo, setHasSetVideo] = useState(false);
+    const listenKeyboard = (e) => {
+        if (e.keyCode === 32) {
+            e.preventDefault();
+            if (!videoRef.current.paused) {
+                pausePlay(e);
+            } else {
+                startPlay(e);
+            }
+        }
+        if (e.keyCode === 37) {
+            minus10();
+        }
+        if (e.keyCode === 39) {
+            add10();
+        }
+        if (e.keyCode === 38) {
+            e.preventDefault();
+            if (videoRef.current.volume <= 0.9) {
+                changeVolume(e, videoRef.current.volume * 100 + 10);
+            }
+        }
+        if (e.keyCode === 40) {
+            e.preventDefault();
+            if (videoRef.current.volume >= 0.1) {
+                changeVolume(e, videoRef.current.volume * 100 - 10);
+            }
+        }
+    }
     useEffect(() => {
         hlsRef.current = new Hls();
         return () => {
             hlsRef.current.destroy();
+            document.removeEventListener('keydown', listenKeyboard);
         }
     }, []);
     useEffect(() => {
@@ -63,6 +93,12 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
             if (currentUrl) {
                 hlsRef.current.loadSource(currentUrl);
                 hlsRef.current.attachMedia(videoRef.current);
+                if (!hasSetVideo) {
+                    // 监听空格键、左右键、上下键
+                    document.addEventListener('keydown', listenKeyboard);
+                    setHasSetVideo(true);
+                    videoRef.current.volume = 0.5;
+                }
             }
         }
         else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
@@ -99,12 +135,11 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
     }
 
     const [showMute, setShowMute] = useState(false);
-    const startPlay = (e: any) => {
+    const startPlay = async (e: any) => {
         console.log('startPlay', e);
         try {
-            videoRef.current.play();
+            await videoRef.current.play();
             setIsPlaying(true);
-            videoRef.current.muted = false;
         } catch (error) {
             if (error.name === 'NotAllowedError') {
                 setShowMute(true);
@@ -126,11 +161,13 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
     }
 
     const minus10 = () => {
-        setCurrentTime(currentTime - 10);
+        if (videoRef.current.currentTime < 10) return;
+        setCurrentTime(videoRef.current.currentTime - 10);
         videoRef.current.currentTime -= 10;
     }
     const add10 = () => {
-        setCurrentTime(currentTime + 10);
+        if (videoRef.current.currentTime + 10 >= videoRef.current.duration) return;
+        setCurrentTime(videoRef.current.currentTime + 10);
         videoRef.current.currentTime += 10;
     }
 
@@ -191,8 +228,8 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        zIndex: 100,               
-                    }} color="inherit" onClick={isPlaying ? pausePlay : startPlay}>{isPlaying ? <Fade in={showOtherWhenIsPlay} timeout={1000}><PauseOutlinedIcon sx={{width: '66px', height: '66px'}} /></Fade> : <PlayArrowOutlinedIcon sx={{width: '66px', height: '66px'}} />}</IconButton>
+                        zIndex: 100,
+                    }} color="inherit" onClick={isPlaying ? pausePlay : startPlay}>{isPlaying ? <Fade in={showOtherWhenIsPlay} timeout={1000}><PauseOutlinedIcon sx={{ width: '66px', height: '66px' }} /></Fade> : <PlayArrowOutlinedIcon sx={{ width: '66px', height: '66px' }} />}</IconButton>
                     <StyledVideo ref={videoRef} src={currentUrl}
                         onProgress={propgressEvent} onLoadedMetadata={loadedmetadata} onDurationChange={durationchange}
                         preload="auto" onTimeUpdate={timeUpdate} onError={errorPlay} onPlay={startPlay} onEnded={endPlay}
@@ -202,7 +239,7 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
 
                 </Stack>
 
-                {/* { showMute && <Stack>取消静音</Stack>} */}
+                {showMute && <Stack>取消静音</Stack>}
 
                 <Fade in={showOtherWhenIsPlay} timeout={1000}>
                     <Stack className="video-control" position="absolute" bottom={0} alignItems="center" sx={{
