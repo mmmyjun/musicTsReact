@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 
 import TvList from './TvList.tsx';
 
@@ -44,17 +45,22 @@ function TvPage() {
         <Box className="tv-page-container">
             <Box className="tv-page-inner">
                 <Box className="search-container" textAlign="center" padding={1}>
-                    <form onSubmit={searchIt}>
+                    <form onSubmit={searchIt} style={{
+                        'display': 'flex',
+                        'justifyContent': 'center',
+                        'alignItems': 'center',
+                    }}>
                         <TextField
                             size='small'
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             label='搜索影视'
-                            variant="filled"
+                            variant="outlined"
                             id="outlined-start-adornment" />
-                        <IconButton color="inherit" onClick={searchIt} sx={{
-                            mt: 1,
-                        }}><SearchIcon /></IconButton>
+
+                        <Button sx={{
+                            marginLeft: 1
+                        }} variant="contained" disabled={loadingList} onClick={searchIt} startIcon={<SearchIcon />}>搜索</Button>
                     </form>
                 </Box>
                 <Box className="tv-list-container" sx={{
