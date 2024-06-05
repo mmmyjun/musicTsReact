@@ -41,4 +41,6 @@ code {
 
 .MuiSlider-track {
   height: 3px !important;
+  border-radius: 0 !important;
 }
+

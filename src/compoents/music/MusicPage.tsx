@@ -7,9 +7,12 @@ import {
 } from "react-router-dom";
 import Box from '@mui/material/Box';
 
+import Page from './CustomInput';
+
 function MusicPage() {
   return (
     <Box className="musicPage">
+      <Page />
       音乐开发中..
     </Box>
   );

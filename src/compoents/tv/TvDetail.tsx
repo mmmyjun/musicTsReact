@@ -269,10 +269,11 @@ export default function TvDetail() {
                 setCurrentEpisodes(0);
                 setCurrentUrl(dataList[0].urls[0].url);
                 setNextUrl(dataList[0].urls[1]?.url || '');
-                setIsLoading(false);
             } else {
-                console.log('msg:', msg);
+                console.log('code not 0,msg:', msg);
             }
+        }).finally(() => {
+            setIsLoading(false);
         });
 
         document.addEventListener('fullscreenchange', () => {

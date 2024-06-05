@@ -213,10 +213,21 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
         }
     }
 
+    const toggleShowHideVideo = () => {
+        console.log('toggleShowHideVideo~~', isPlaying);
+        if (isPlaying) {
+            if (timer) clearTimeout(timer);
+        }
+
+        setTimer(setTimeout(() => {
+            setShowOtherWhenIsPlay(!showOtherWhenIsPlay);
+        }, 0));
+    }
+
     return (
         <>
             <Stack className="video-comp-container" position="relative" >
-                <Stack onMouseMove={hoverVideo} onClick={hoverVideo} className="video-comp" direction="row" alignItems="center" position="relative" sx={{
+                <Stack onMouseMove={hoverVideo} className="video-comp" direction="row" alignItems="center" position="relative" sx={{
                     width: '100%',
                     height: isFullScreen ? '100vh' : 'calc(100vh - 60px)',
                     backgroundColor: 'black',
@@ -230,7 +241,7 @@ function VideoComp({ currentUrl, changeToNextOne, nextUrl, isFullScreen, changeT
                         transform: 'translate(-50%, -50%)',
                         zIndex: 100,
                     }} color="inherit" onClick={isPlaying ? pausePlay : startPlay}>{isPlaying ? <Fade in={showOtherWhenIsPlay} timeout={1000}><PauseOutlinedIcon sx={{ width: '66px', height: '66px' }} /></Fade> : <PlayArrowOutlinedIcon sx={{ width: '66px', height: '66px' }} />}</IconButton>
-                    <StyledVideo ref={videoRef} src={currentUrl}
+                    <StyledVideo ref={videoRef} src={currentUrl} onClick={toggleShowHideVideo} 
                         onProgress={propgressEvent} onLoadedMetadata={loadedmetadata} onDurationChange={durationchange}
                         preload="auto" onTimeUpdate={timeUpdate} onError={errorPlay} onPlay={startPlay} onEnded={endPlay}
                         onPause={pausePlay} >
